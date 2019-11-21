@@ -11,6 +11,7 @@ const app = express();
 
 // My middlewares
 app.use(guard.tokenExists);
+app.use(guard.tokenValid);
 
 app.use(logger('dev'));
 app.use(express.json());
