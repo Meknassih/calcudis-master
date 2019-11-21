@@ -5,13 +5,10 @@ const logger = require('morgan');
 
 const guard = require('./middleware/guard');
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const computeRouter = require('./routes/compute');
 
 const app = express();
 
-// My middlewares
-app.use(guard.tokenExists);
-app.use(guard.tokenValid);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -21,6 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Middlewares to protect "compute" route with JWT token
+app.use(guard.tokenExists);
+app.use(guard.tokenValid);
+app.use('/compute', computeRouter);
 
 module.exports = app;
