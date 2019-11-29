@@ -1,4 +1,5 @@
 const algorithm = require('./algorithm');
+const config = require('./config');
 
 class Batch {
   constructor(keyRangeId, message, fromKey, toKey) {
@@ -38,7 +39,7 @@ class Batch {
         }
       }
       await db.close();
-    }, 10000);
+    }, config.maxBatchStallMs);
   }
 
   toString() {
