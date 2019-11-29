@@ -20,6 +20,7 @@ npm run start
 ```
 
 ## Database models
+Execute `example.sql` to start working quickly with a preloaded database with dummy data, or execute `schema.sql` if you wish to start with a clean database.
 ### Job
 Describes an encrypted message and all the metadata associated with it.
 - **crypted** : the encrypted data

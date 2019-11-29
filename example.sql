@@ -1,0 +1,29 @@
+BEGIN TRANSACTION;
+CREATE TABLE keyRange (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  job_id INT NOT NULL,
+  fromKey VARCHAR(255) NOT NULL,
+  toKey VARCHAR(255) NOT NULL,
+  totalKeys INT NOT NULL,
+  tried BOOLEAN NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_job
+  FOREIGN KEY (job_id)
+    REFERENCES job(id)
+);
+INSERT INTO `keyRange` (id,job_id,fromKey,toKey,totalKeys,tried,created_at) VALUES (0,0,'0','12',13,0,'2019-11-29 09:15:51'),
+ (1,0,'13','26',13,0,'2019-11-29 09:15:51'),
+ (2,1,'0','12',13,0,'2019-11-29 09:15:51'),
+ (3,1,'13','26',13,0,'2019-11-29 09:15:51');
+CREATE TABLE job (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    crypted VARCHAR(255) NOT NULL,
+    plain VARCHAR(255),
+    status TINYINT NOT NULL DEFAULT 0,
+    key VARCHAR(255),
+    priority TINYINT NOT NULL DEFAULT 255,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+INSERT INTO `job` (id,crypted,plain,status,key,priority,created_at) VALUES (0,'bcd',NULL,0,NULL,128,'2019-11-29 09:13:35'),
+ (1,'fgh',NULL,0,NULL,255,'2019-11-29 09:14:26');
+COMMIT;
