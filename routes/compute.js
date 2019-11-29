@@ -40,7 +40,7 @@ router.get('/batch', async function (req, res) {
     ORDER BY job.priority ASC;');
     if (batches.length > 0) {
       res.status(200);
-      const batch = new Batch(batches[0].keyRange_id, batches[0].message, batches[0].fromKey, batches[0].toKey);
+      const batch = new Batch(batches[0].keyRange_id, batches[0].crypted, batches[0].fromKey, batches[0].toKey);
       await batch.stall();
       res.send(JSON.stringify(batch.toString()));
       await batch.scheduleUnstall();
@@ -57,17 +57,19 @@ router.get('/batch', async function (req, res) {
 
 router.post('/foundKey', function (req, res) {
   res.setHeader('Content-type', 'application/json');
-  if (!req.body.encrypted || !req.body.decrypted || !req.body.secret) {
+  if (req.body.keyRangeId === undefined || !req.body.encrypted || !req.body.decrypted || !req.body.secret) {
     res.status(400);
-    return res.send(JSON.stringify({ message: 'Solution must contain keys "encrypted", "decrypted" and "secret".' }));
+    return res.send(JSON.stringify({ message: 'Solution must contain keys "keyRangeId", "encrypted", "decrypted" and "secret".' }));
   }
 
-  if (new Solution(req.body.encrypted, req.body.decrypted, req.body.secret).verify()) {
+  const solution = new Solution(req.body.keyRangeId, req.body.encrypted, req.body.decrypted, req.body.secret);
+  if (solution.verify()) {
+    solution.jobDone();
     res.status(200);
     return res.send(JSON.stringify({ message: 'Thank you.' }));
   } else {
     res.status(409);
-    return res.send(JSON.stringify(new Batch('bcd', -2, 2)));
+    return res.send(JSON.stringify({ message: 'The suggested solution did not pass verification.' }));
   }
 });
 
