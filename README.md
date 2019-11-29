@@ -1,5 +1,7 @@
 # Calcudis Application Server
 ## Getting started
+### Install and start the Authentication Server
+Refer to [this Github repository](https://github.com/Meknassih/calcudis-auth) and follow the instructions to start the AS.
 ### Install the dependencies
 ```bash
 npm install
