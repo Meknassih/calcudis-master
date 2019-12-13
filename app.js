@@ -18,9 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRouter);
-// Middlewares to protect "compute" route with JWT token
+// Middlewares to protect "/compute" route with JWT token
 app.use(guard.tokenExists);
 app.use(guard.tokenValid);
+
 app.use('/compute', computeRouter);
 
 module.exports = app;

@@ -21,6 +21,10 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// Listen to websockets
+const io = require('socket.io')(server);
+require('../websockets')(io);
+
 /**
  * Listen on provided port, on all network interfaces.
  */
