@@ -2,11 +2,12 @@ const algorithm = require('./algorithm');
 const config = require('./config');
 
 class Batch {
-  constructor(keyRangeId, message, fromKey, toKey) {
+  constructor(keyRangeId, message, fromKey, toKey, slug) {
     this.keyRangeId = keyRangeId;
     this.message = message;
     this.fromKey = fromKey;
     this.toKey = toKey;
+    this.slug = slug;
   }
 
   // Marks batch as being worked on, avoids batch being sent to multiple clients

@@ -14,7 +14,7 @@ module.exports = (io) => {
 
     socket.on('getAlgorithm', function (lang) {
       try {
-        socket.emit('alg', { code: algorithm.getAlgorithm(lang) });
+        socket.emit('algorithm', { code: algorithm.getAlgorithm(lang) });
       } catch (e) {
         socket.emit('unsupported', { supported: algorithm.supportedClients });
       }
@@ -29,7 +29,7 @@ module.exports = (io) => {
       try {
         const batches = await dbservice.getBatches();
         if (batches.length > 0) {
-          const batch = new Batch(batches[0].keyRange_id, batches[0].crypted, batches[0].fromKey, batches[0].toKey);
+          const batch = new Batch(batches[0].keyRange_id, batches[0].crypted, batches[0].fromKey, batches[0].toKey, batches[0].plain);
           await batch.stall();
           socket.emit('batch', batch);
           await batch.scheduleUnstall();
