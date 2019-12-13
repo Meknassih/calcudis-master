@@ -1,26 +1,17 @@
-const sqlite = require('sqlite');
 const express = require('express');
 const router = express.Router();
 const algorithm = require('../algorithm');
 const { Batch, Solution } = require('../model');
-const openDb = sqlite.open('./data.db', { Promise });
+const dbservice = require('../dbservice');
 
 router.get('/algorithm', function (req, res) {
   res.setHeader('Content-type', 'application/json');
-  switch (req.query.lang) {
-    case 'js':
-    case 'ts':
-    case 'javascript':
-    case 'typescript':
-    case undefined:
-      res.status(200);
-      res.send(JSON.stringify({ code: algorithm.stringTransposition.toString() }));
-      break;
-
-    default:
-      res.status(404);
-      res.send(JSON.stringify({ message: 'Client language not supported.' }));
-      break;
+  try {
+    res.status(200);
+    res.send(JSON.stringify({ code: algorithm.getAlgorithm(req.query.lang) }));
+  } catch (e) {
+    res.status(404);
+    res.send(JSON.stringify({ message: 'Client language not supported.' }));
   }
 });
 
@@ -33,11 +24,7 @@ router.get('/slug', function (req, res) {
 router.get('/batch', async function (req, res) {
   res.setHeader('Content-type', 'application/json');
   try {
-    const db = await openDb;
-    const batches = await db.all('SELECT job.*, keyRange.id as keyRange_id, keyRange.fromKey, keyRange.toKey, keyRange.tried \
-    FROM job INNER JOIN keyRange ON job.id = keyRange.job_id \
-    WHERE job.status = 0 AND keyRange.tried = 0 \
-    ORDER BY job.priority ASC;');
+    batches = await dbservice.getBatches();
     if (batches.length > 0) {
       res.status(200);
       const batch = new Batch(batches[0].keyRange_id, batches[0].crypted, batches[0].fromKey, batches[0].toKey);
